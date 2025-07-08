@@ -1,11 +1,8 @@
-import { Head } from '@inertiajs/react';
+import { Head, Link } from '@inertiajs/react';
 import LandingNavBar from '@/components/ui/landing/landing-nav-bar';
 import AppFooter from '@/components/ui/app/app-footer';
-import BoostSection from '@/components/ui/landing/look-our-cars';
-import ContentSection from '@/components/ui/landing/content-section';
-import WannaFindOutCarrousel from '@/components/ui/landing/wanna-find-out';
 
-export default function Welcome() {
+export default function Cars() {
     return (
         <>
             <Head title="Landing" />
@@ -15,13 +12,6 @@ export default function Welcome() {
                 </header>
 
                 <main className="flex-1 bg-gray-100">
-                    <div>
-                        <BoostSection />
-                    </div>
-                    <div>
-                        <WannaFindOutCarrousel />
-                        <ContentSection />
-                    </div>
                 </main>
 
                 <footer className="flex-none bottom-0 z-20">

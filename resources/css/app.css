@@ -5,6 +5,8 @@
 @source '../views';
 @source '../../vendor/laravel/framework/src/Illuminate/Pagination/resources/views/*.blade.php';
 
+@tailwind utilities;
+
 @custom-variant dark (&:is(.dark *));
 
 @theme {
@@ -157,3 +159,14 @@
         @apply bg-background text-foreground;
     }
 }
+
+@keyframes marquee {
+    0% { transform: translateX(0%); }
+    100% { transform: translateX(-50%); }
+  }
+  
+  .animate-marquee {
+    display: inline-block;
+    white-space: nowrap;
+    animation: marquee 20s linear infinite;
+  }
