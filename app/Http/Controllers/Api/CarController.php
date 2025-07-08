@@ -14,60 +14,37 @@ class CarController extends Controller
     public function index()
     {
 
-    $cars = Car::all(); // o ->paginate(10) si quieres paginar
+    $cars = Car::all();
 
     return response()->json([
         'data' => $cars,
         'message' => 'Car list retrieved successfully.',
     ], 200);
     
-}
-
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
-    {
-        //
     }
+
 
     /**
      * Store a newly created resource in storage.
      */
     public function store(Request $request)
     {
-        //
+        $validated = $request->validate([
+            'plate_number'  => 'required|string|unique:cars,plate_number',
+            'manufacturer'  => 'required|string',
+            'model'         => 'required|string',
+            'color'         => 'required|string',
+        ], [
+            'plate_number.unique' => 'This plate number has already been registered.',
+            'plate_number.required' => 'You must specify a plate number with four numbers and three letters.',
+        ]);
+
+        $car = Car::create($validated);
+
+        return response()->json([
+            'data'    => $car,
+            'message' => 'Car registered successfully.',
+        ], 201);
     }
 
-    /**
-     * Display the specified resource.
-     */
-    public function show(Car $car)
-    {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(Car $car)
-    {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, Car $car)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(Car $car)
-    {
-        //
-    }
 }
