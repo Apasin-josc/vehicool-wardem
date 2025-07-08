@@ -78,7 +78,7 @@ export default function CarForm({ onCreated }: CarFormProps) {
             className="mb-8 bg-white p-6 rounded-lg shadow space-y-4 max-w-md mx-auto"
         >
             <h2 className="text-2xl font-semibold text-black mb-2">
-                Post a your Vehicle!
+                Post your Vehicle!
             </h2>
 
             {(['plate_number', 'manufacturer', 'model', 'color'] as const).map(field => (
