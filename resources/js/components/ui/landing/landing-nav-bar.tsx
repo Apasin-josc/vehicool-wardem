@@ -2,7 +2,6 @@ import { type SharedData } from '@/types';
 import { Link, usePage } from '@inertiajs/react';
 
 export default function LandingNavBar() {
-    const { auth } = usePage<SharedData>().props;
 
     return (
         <nav className="p-4 flex items-center justify-between bg-gray-400 shadow">
