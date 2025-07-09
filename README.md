@@ -40,3 +40,5 @@ PS C:\Users\Omar.Sanchez\Herd\vehicool-wardem>
     3. in order to see the sqlite files in vs code we can install an extension called SQLITE VIEWER
 
 6. `npm run dev` to use all the public assets that vite give us
+
+nice
