@@ -1,5 +1,4 @@
-import { type SharedData } from '@/types';
-import { Link, usePage } from '@inertiajs/react';
+import { Link } from '@inertiajs/react';
 
 export default function LandingNavBar() {
 
