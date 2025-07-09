@@ -14,6 +14,10 @@ class Car extends Model
         'plate_number',
         'model',
         'manufacturer',
-        'color',
+        'color_id',
     ];
+    public function color()
+    {
+        return $this->belongsTo(Color::class);
+    }
 }

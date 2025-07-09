@@ -1,4 +1,10 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+
+interface Color {
+    id: number;
+    name: string;
+    hex: string;
+}
 
 interface CarFormProps {
     onCreated: () => void;
@@ -8,7 +14,6 @@ const placeholders: Record<string, string> = {
     plate_number: 'e.g. 1234 ABC',
     manufacturer: 'e.g. Toyota',
     model: 'e.g. Corolla',
-    color: 'e.g. Red',
 };
 
 export default function CarForm({ onCreated }: CarFormProps) {
@@ -16,25 +21,44 @@ export default function CarForm({ onCreated }: CarFormProps) {
         plate_number: '',
         manufacturer: '',
         model: '',
-        color: '',
+        color_id: '',
     });
     const [errors, setErrors] = useState<Record<string, string[]>>({});
     const [submitting, setSubmitting] = useState(false);
 
-    function handleChange(e: React.ChangeEvent<HTMLInputElement>) {
-        setErrors(prev => ({ ...prev, [e.target.name]: [] }));
-        setForm({ ...form, [e.target.name]: e.target.value });
+    const [colors, setColors] = useState<Color[]>([]);
+
+    useEffect(() => {
+        fetch('/api/colors')
+            .then(res => res.json())
+            .then(setColors)
+            .catch(console.error);
+    }, []);
+
+    function handleChange(
+        e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
+    ) {
+        const { name, value } = e.target;
+        setErrors(prev => ({ ...prev, [name]: [] }));
+        setForm(prev => ({ ...prev, [name]: value }));
     }
 
     async function handleSubmit(e: React.FormEvent) {
         e.preventDefault();
 
         const localErrors: Record<string, string[]> = {};
-        (['plate_number', 'manufacturer', 'model', 'color'] as const).forEach(field => {
-            if (!form[field].trim()) {
-                localErrors[field] = ['This field is required.'];
-            }
-        });
+        if (!form.plate_number.trim()) {
+            localErrors.plate_number = ['This field is required.'];
+        }
+        if (!form.manufacturer.trim()) {
+            localErrors.manufacturer = ['This field is required.'];
+        }
+        if (!form.model.trim()) {
+            localErrors.model = ['This field is required.'];
+        }
+        if (!form.color_id) {
+            localErrors.color_id = ['You must select a color.'];
+        }
 
         const platePattern = /^\d{4}\s?[A-Z]{3}$/;
         if (form.plate_number && !platePattern.test(form.plate_number)) {
@@ -63,7 +87,7 @@ export default function CarForm({ onCreated }: CarFormProps) {
                 throw new Error(payload.message || 'Validation error');
             }
 
-            setForm({ plate_number: '', manufacturer: '', model: '', color: '' });
+            setForm({ plate_number: '', manufacturer: '', model: '', color_id: '' });
             onCreated();
         } catch (err) {
             console.error(err);
@@ -81,7 +105,7 @@ export default function CarForm({ onCreated }: CarFormProps) {
                 Post your Vehicle!
             </h2>
 
-            {(['plate_number', 'manufacturer', 'model', 'color'] as const).map(field => (
+            {(['plate_number', 'manufacturer', 'model'] as const).map(field => (
                 <div key={field}>
                     <label className="block text-sm font-medium text-black mb-1">
                         {field.replace('_', ' ').toUpperCase()}
@@ -100,10 +124,33 @@ export default function CarForm({ onCreated }: CarFormProps) {
                 </div>
             ))}
 
+            <div>
+                <label className="block text-sm font-medium text-black mb-1">
+                    Color
+                </label>
+                <select
+                    name="color_id"
+                    value={form.color_id}
+                    onChange={handleChange}
+                    disabled={submitting}
+                    className="w-full border rounded px-3 py-2 text-black"
+                >
+                    <option value="">— Select a color —</option>
+                    {colors.map(c => (
+                        <option key={c.id} value={c.id}>
+                            {c.name}
+                        </option>
+                    ))}
+                </select>
+                {errors.color_id && (
+                    <p className="text-red-600 text-sm mt-1">{errors.color_id[0]}</p>
+                )}
+            </div>
+
             <button
                 type="submit"
                 disabled={submitting}
-                className="w-full bg-[#FF3B30] text-white py-2 rounded hover:bg-red-600 transition disabled:opacity-50"
+                className="w-full bg-red-500 text-white py-2 rounded hover:bg-red-600 transition disabled:opacity-50"
             >
                 {submitting ? 'Submitting…' : 'Create Vehicle'}
             </button>

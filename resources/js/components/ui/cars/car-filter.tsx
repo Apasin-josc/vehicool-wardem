@@ -1,12 +1,18 @@
 import { useState, useEffect } from 'react';
 
+export interface Color {
+    id: number;
+    name: string;
+    hex: string;
+}
+
 export interface Car {
     id: number;
     plate_number: string;
     manufacturer: string;
     model: string;
-    color: string;
     image_url?: string;
+    color: Color | null;
 }
 
 interface CarFilterProps {
@@ -15,20 +21,28 @@ interface CarFilterProps {
 }
 
 export default function CarFilter({ cars, onFilter }: CarFilterProps) {
-    const [selectedColor, setSelectedColor] = useState('');
-    const [selectedManufacturer, setSelectedManufacturer] = useState('');
+    const [selectedColor, setSelectedColor] = useState<string>('');
+    const [selectedManufacturer, setSelectedManufacturer] = useState<string>('');
 
-    const colors = Array.from(new Set(cars.map(c => c.color)));
-    const manufacturers = Array.from(new Set(cars.map(c => c.manufacturer)));
+    // Extraemos solo los nombres de color (sin repetir) y descartamos null
+    const colors = Array.from(
+        new Set(cars.map(c => c.color?.name || '').filter(name => name))
+    );
+
+    const manufacturers = Array.from(
+        new Set(cars.map(c => c.manufacturer))
+    );
 
     useEffect(() => {
         let filtered = cars;
+
         if (selectedColor) {
-            filtered = filtered.filter(c => c.color === selectedColor);
+            filtered = filtered.filter(c => c.color?.name === selectedColor);
         }
         if (selectedManufacturer) {
             filtered = filtered.filter(c => c.manufacturer === selectedManufacturer);
         }
+
         onFilter(filtered);
     }, [selectedColor, selectedManufacturer, cars, onFilter]);
 
@@ -43,10 +57,10 @@ export default function CarFilter({ cars, onFilter }: CarFilterProps) {
                     value={selectedColor}
                     onChange={e => setSelectedColor(e.target.value)}
                 >
-                    <option value="" className="text-black">All Colors</option>
-                    {colors.map(color => (
-                        <option key={color} value={color} className="text-black">
-                            {color}
+                    <option value="">All Colors</option>
+                    {colors.map(name => (
+                        <option key={name} value={name} className="text-black">
+                            {name}
                         </option>
                     ))}
                 </select>
@@ -61,7 +75,7 @@ export default function CarFilter({ cars, onFilter }: CarFilterProps) {
                     value={selectedManufacturer}
                     onChange={e => setSelectedManufacturer(e.target.value)}
                 >
-                    <option value="" className="text-black">All Manufacturers</option>
+                    <option value="">All Manufacturers</option>
                     {manufacturers.map(m => (
                         <option key={m} value={m} className="text-black">
                             {m}
@@ -71,5 +85,4 @@ export default function CarFilter({ cars, onFilter }: CarFilterProps) {
             </div>
         </div>
     );
-
 }

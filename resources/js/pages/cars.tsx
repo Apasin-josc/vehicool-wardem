@@ -92,8 +92,27 @@ export default function Cars() {
                                                 <p className="text-black">
                                                     <strong>Plate:</strong> {car.plate_number}
                                                 </p>
-                                                <p className="text-black">
-                                                    <strong>Color:</strong> {car.color}
+                                                <p className="text-black flex items-center space-x-2">
+                                                    <strong>Color:</strong>
+                                                    {car.color ? (
+                                                        <span
+                                                            className="px-2 py-1 rounded"
+                                                            style={{
+                                                                backgroundColor: car.color.hex,
+                                                                color:
+                                                                    (parseInt(car.color.hex.slice(1, 3), 16) * 299 +
+                                                                        parseInt(car.color.hex.slice(3, 5), 16) * 587 +
+                                                                        parseInt(car.color.hex.slice(5, 7), 16) * 114
+                                                                    ) / 1000 > 0.5
+                                                                        ? '#000'
+                                                                        : '#fff',
+                                                            }}
+                                                        >
+                                                            {car.color.name}
+                                                        </span>
+                                                    ) : (
+                                                        <em>Sin color</em>
+                                                    )}
                                                 </p>
                                             </div>
                                         </li>
